@@ -1,0 +1,28 @@
+# ====================================================
+# internal-repos.repo
+# ====================================================
+# Tell Centos about the local repositories by modifying
+# this file to match the individual VMLab settings
+# and installing it in /etc/yum.repos.d
+# ====================================================
+[internal-base]
+name=CentOS Base
+baseurl=http://vmlab.woodsnet.org/base/
+gpgcheck=0
+enabled=1
+[internal-centosplus]
+name=CentOS CentOSPlus
+baseurl=http://vmlab.woodsnet.org/centosplus/
+gpgcheck=0
+enabled=1
+[internal-extras]
+name=CentOS Extras
+baseurl=http://vmlab.woodsnet.org/extras/
+gpgcheck=0
+enabled=1
+[internal-updates]
+name=CentOS Updates
+baseurl=http://vmlab.woodsnet.org/updates/
+gpgcheck=0
+enabled=1
+

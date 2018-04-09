@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# ======================================================
+# makeLocalRepository
+# version 0.1.0
+# ------------------------------------------------------
+#
+# script to sync the major CENTOS repositories to a 
+# local location on the vmlab cold storage array. 
+# 
+# use by sourcing the file:
+#    source makeLocalRepository <list of repositories>
+# eg:
+#     . makeLocalRepository base extras
+#
+# ------------------------------------------------------
+# Copyright 2018, Thomas M. Woods
+# 
+# This script is distributed under the terms of the 
+# GNU Affero General Public License v3.0
+#
+# =====================================================
+
+
+# =====================================================
+# Variables and Data
+# =====================================================
+REPODIR=/coldstore/repos
+REPOS=$@
+
+# =====================================================
+# Make the repository directories if they don't already
+# exist.
+# =====================================================
+makeDirs() {
+	for repo in $REPOS
+	do
+	    if [ ! -d $REPODIR/$repo ]
+            then
+                mkdir -p $REPODIR/$repo
+            fi
+	done
+}
+
+
+# =====================================================
+# Synchronize the repositories
+# 
+# =====================================================
+syncRepositories() {
+	for repo in $REPOS
+	do
+	    reposync --gpgcheck --plugins --repoid=$repo --newest-only --delete --downloadcomps --download-metadata --download_path=$REPODIR/$repo/
+	done
+}
+
+
+# =====================================================
+# Create the actual repository.  If Centos base
+# repository then MAKE SURE to get the package 
+# bundling file (comps.xml)
+# =====================================================
+createRepositories() {
+        for repo in $REPOS
+        do
+	    if $repo == "base"
+            then
+		createrepo $REPODIR/$repo/ -g comps.xml
+            else
+		createrepo $REPODIR/$repo	
+	    fi
+	done
+}
+
+
+# =======================================================
+# Main Loop
+# Does everything
+# =======================================================
+makeDirs
+syncRepositories
+createRepositories
